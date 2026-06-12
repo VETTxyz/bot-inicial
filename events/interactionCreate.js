@@ -1,8 +1,19 @@
-const { Events, EmbedBuilder } = require('discord.js');
+const { Events, InteractionType, EmbedBuilder } = require('discord.js');
+const { handleButtonInteraction, handleModalSubmit } = require('../utils/embedPanelHandler');
 
 module.exports = {
   name: Events.InteractionCreate,
   async execute(client, interaction) {
+    if (interaction.type === InteractionType.MessageComponent) {
+      const handled = await handleButtonInteraction(interaction);
+      if (handled) return;
+    }
+
+    if (interaction.type === InteractionType.ModalSubmit) {
+      const handled = await handleModalSubmit(interaction);
+      if (handled) return;
+    }
+
     if (!interaction.isButton()) return;
     if (interaction.customId !== 'verificar_exe_profile') return;
 

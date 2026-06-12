@@ -179,7 +179,7 @@ async function updateMessageRanking(client) {
   const callEmbed = new EmbedBuilder()
     .setColor('#9c27b0')
     .setTitle('🎤 Ranking de Horas em Call')
-    .setThumbnail("")
+    .setThumbnail("https://cdn.discordapp.com/attachments/1513115563679940658/1513512145671946270/pngwing.com_2.png?ex=6a27ff87&is=6a26ae07&hm=704a95109b217c561cb999b51184ea449915a6558ad3b8d8849359dcd5d72a5a&")
     .setDescription(callDescription)
     .addFields({
       name: '⏱️ Estatísticas',

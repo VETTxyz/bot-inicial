@@ -1,6 +1,49 @@
 const { QuickDB } = require('quick.db');
 const db = new QuickDB();
 
+let nicknameUpdateTimer = null;
+let pendingNicknameUpdate = false;
+
+async function updateBotNickname(guild) {
+  try {
+    const members = await guild.members.fetch();
+    const usersInCall = members.filter(m => m.voice.channel && !m.user.bot).size;
+
+    const botMember = guild.members.me;
+    if (!botMember) return;
+
+    const newNickname = usersInCall > 0 ? `m.sys: ${usersInCall} em call` : 'm.sys';
+
+    if (botMember.nickname !== newNickname) {
+      await botMember.setNickname(newNickname);
+      console.log(`✅ Nickname do bot atualizado para: ${newNickname}`);
+    }
+  } catch (error) {
+    const isGatewayRateLimit = error.name === 'GatewayRateLimitError' || /opcode 8/i.test(error.message);
+    if (isGatewayRateLimit) {
+      const retryAfter = error.retryAfter || error.retry_after || 25000;
+      const retryIn = Math.max(1000, Math.ceil(retryAfter));
+      console.warn(`⚠️ Rate limit ao atualizar nickname. Tentando novamente em ${retryIn}ms.`);
+      scheduleNicknameUpdate(guild, retryIn);
+      return;
+    }
+
+    console.error('❌ Erro ao atualizar nickname do bot:', error);
+  } finally {
+    pendingNicknameUpdate = false;
+  }
+}
+
+function scheduleNicknameUpdate(guild, delay = 1000) {
+  if (nicknameUpdateTimer || pendingNicknameUpdate) return;
+
+  nicknameUpdateTimer = setTimeout(async () => {
+    nicknameUpdateTimer = null;
+    pendingNicknameUpdate = true;
+    await updateBotNickname(guild);
+  }, delay);
+}
+
 module.exports = {
   name: 'voiceStateUpdate',
   
@@ -18,6 +61,9 @@ module.exports = {
       const joinTime = Date.now();
       await db.set(userStatusKey, { joinedAt: joinTime, channelId: newState.channelId });
       console.log(`🎤 ${newState.member.user.tag} entrou em um canal de voz.`);
+      
+      // Atualizar nickname do bot
+      scheduleNicknameUpdate(newState.guild);
     }
     
     // Usuário saiu de um canal de voz
@@ -49,6 +95,9 @@ module.exports = {
       // Limpar status quando sai
       await db.delete(userStatusKey);
       console.log(`📵 ${newState.member.user.tag} saiu de um canal de voz.`);
+      
+      // Atualizar nickname do bot
+      scheduleNicknameUpdate(newState.guild);
     }
     
     // Mudou de canal (sem entrar ou sair)

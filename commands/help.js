@@ -48,6 +48,13 @@ module.exports = {
           });
         }
 
+        if (command.examples && command.examples.length > 0) {
+          commandEmbed.addFields({
+            name: '💡 Exemplos',
+            value: command.examples.map(example => `\`${PREFIX}${example}\``).join('\n'),
+          });
+        }
+
         return message.reply({ embeds: [commandEmbed] });
       }
 
