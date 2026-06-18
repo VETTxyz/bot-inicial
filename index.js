@@ -2,6 +2,7 @@ const { Client, GatewayIntentBits } = require('discord.js');
 require('dotenv').config();
 const config = require('./config');
 const commandHandler = require('./handlers/commandHandler');
+const slashCommandHandler = require('./handlers/slashCommandHandler');
 const eventHandler = require('./handlers/eventHandler');
 
 const client = new Client({
@@ -19,6 +20,7 @@ console.log('\n╔════════════════════�
 console.log('║       🤖 INICIANDO BOT 🤖        ║');
 console.log('╚════════════════════════════════════════════════╝\n');
 commandHandler(client);
+slashCommandHandler(client);
 
 eventHandler(client);
 

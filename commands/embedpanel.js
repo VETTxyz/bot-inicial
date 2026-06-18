@@ -8,16 +8,16 @@ const { createSession } = require('../utils/embedPanelStore');
 
 const PANEL_ID = 'embed_panel';
 const optionFields = [
-  { id: 'title', label: 'Título', style: 'SECONDARY' },
-  { id: 'description', label: 'Descrição', style: 'SECONDARY' },
-  { id: 'color', label: 'Cor', style: 'SECONDARY' },
-  { id: 'author', label: 'Autor', style: 'SECONDARY' },
-  { id: 'footer', label: 'Rodapé', style: 'SECONDARY' },
-  { id: 'thumbnail', label: 'Thumbnail', style: 'SECONDARY' },
-  { id: 'image', label: 'Imagem', style: 'SECONDARY' },
-  { id: 'timestamp', label: 'Timestamp', style: 'SECONDARY' },
-  { id: 'addfield', label: 'Adicionar campo', style: 'SUCCESS' },
-  { id: 'send', label: 'Enviar embed', style: 'PRIMARY' },
+  { id: 'title', label: 'Título', style: ButtonStyle.Secondary },
+  { id: 'description', label: 'Descrição', style: ButtonStyle.Secondary },
+  { id: 'color', label: 'Cor', style: ButtonStyle.Secondary },
+  { id: 'author', label: 'Autor', style: ButtonStyle.Secondary },
+  { id: 'footer', label: 'Rodapé', style: ButtonStyle.Secondary },
+  { id: 'thumbnail', label: 'Thumbnail', style: ButtonStyle.Secondary },
+  { id: 'image', label: 'Imagem', style: ButtonStyle.Secondary },
+  { id: 'timestamp', label: 'Timestamp', style: ButtonStyle.Secondary },
+  { id: 'addfield', label: 'Adicionar campo', style: ButtonStyle.Success },
+  { id: 'send', label: 'Enviar embed', style: ButtonStyle.Primary },
 ];
 
 function buildPanelEmbed(options) {

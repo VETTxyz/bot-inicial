@@ -1,38 +1,6 @@
 const { QuickDB } = require('quick.db');
 const db = new QuickDB();
 
-let nicknameUpdateTimer = null;
-let pendingNicknameUpdate = false;
-
-async function updateBotNickname(guild) {
-  try {
-    const members = await guild.members.fetch();
-    const usersInCall = members.filter(m => m.voice.channel && !m.user.bot).size;
-
-    const botMember = guild.members.me;
-    if (!botMember) return;
-
-    const newNickname = usersInCall > 0 ? `m.sys: ${usersInCall} em call` : 'm.sys';
-
-    if (botMember.nickname !== newNickname) {
-      await botMember.setNickname(newNickname);
-      console.log(`✅ Nickname do bot atualizado para: ${newNickname}`);
-    }
-  } catch (error) {
-    const isGatewayRateLimit = error.name === 'GatewayRateLimitError' || /opcode 8/i.test(error.message);
-    if (isGatewayRateLimit) {
-      const retryAfter = error.retryAfter || error.retry_after || 25000;
-      const retryIn = Math.max(1000, Math.ceil(retryAfter));
-      console.warn(`⚠️ Rate limit ao atualizar nickname. Tentando novamente em ${retryIn}ms.`);
-      scheduleNicknameUpdate(guild, retryIn);
-      return;
-    }
-
-    console.error('❌ Erro ao atualizar nickname do bot:', error);
-  } finally {
-    pendingNicknameUpdate = false;
-  }
-}
 
 function scheduleNicknameUpdate(guild, delay = 1000) {
   if (nicknameUpdateTimer || pendingNicknameUpdate) return;

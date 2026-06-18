@@ -7,6 +7,20 @@ const {
 
 const PANEL_PREFIX = 'embed_panel';
 
+function isValidColor(value) {
+  if (!value) return false;
+  try {
+    new EmbedBuilder().setColor(value);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function resolveColor(value) {
+  return isValidColor(value) ? value : '#0099ff';
+}
+
 const optionButtons = [
   { id: 'title', label: 'Título', style: ButtonStyle.Secondary },
   { id: 'description', label: 'Descrição', style: ButtonStyle.Secondary },
@@ -22,7 +36,7 @@ const optionButtons = [
 
 function buildPanelEmbed(options) {
   const embed = new EmbedBuilder()
-    .setColor(options.color || '#0099ff')
+    .setColor(resolveColor(options.color))
     .setTitle(options.title || 'Painel de criação de embed')
     .setDescription(
       options.description ||
@@ -78,4 +92,5 @@ module.exports = {
   PANEL_PREFIX,
   buildPanelEmbed,
   buildPanelComponents,
+  isValidColor,
 };

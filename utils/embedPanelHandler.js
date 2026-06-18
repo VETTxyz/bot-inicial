@@ -191,6 +191,22 @@ async function handleModalSubmit(interaction) {
   const values = interaction.fields;
   const updatedOptions = { ...session.options };
 
+  if (action === 'color') {
+    const colorValue = values.getTextInputValue('value').trim();
+    const { isValidColor } = require('./embedPanelUtils');
+
+    if (!isValidColor(colorValue)) {
+      await interaction.reply({ content: '⚠️ Cor inválida. Use um valor hexadecimal como `#0099ff` ou um alias válido.', ephemeral: true });
+      return true;
+    }
+
+    updatedOptions.color = colorValue;
+    updateSession(session.panelId, { options: updatedOptions });
+    await interaction.reply({ content: '✅ Cor atualizada.', ephemeral: true });
+    await updatePanelMessage(interaction, { ...session, options: updatedOptions });
+    return true;
+  }
+
   if (editableFields.has(action)) {
     updatedOptions[action] = values.getTextInputValue('value');
     updateSession(session.panelId, { options: updatedOptions });
