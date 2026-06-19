@@ -1,7 +1,5 @@
 const { Events } = require('discord.js');
 const PREFIX = process.env.PREFIX || '-';
-const { QuickDB } = require('quick.db');
-const db = new QuickDB();
 
 const COMMAND_CLEANUP_CHANNEL_IDS = new Set([
   '1513117714246402268',
@@ -19,13 +17,6 @@ module.exports = {
   async execute(client, message) {
     if (message.author.bot) return;
     if (!message.guild) return;
-
-    // Contagem de mensagens
-    if (message.member && !message.member.user.bot) {
-      const key = `messages_${message.guild.id}_${message.author.id}`;
-      await db.add(key, 1);
-    }
-
     if (!message.content.startsWith(PREFIX)) return;
     const args = message.content.slice(PREFIX.length).trim().split(/ +/);
     const commandName = args.shift().toLowerCase();
